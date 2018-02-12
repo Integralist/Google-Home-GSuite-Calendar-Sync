@@ -118,19 +118,19 @@ function checkForEventUpdates(rows, trackGSuiteEvents, personalCalendar, persona
             var body_event = "Start/End time was updated to:\n\n" + event_start + "\n-\n" + event_end
             var body = body_title + body_event
             
-            GmailApp.sendEmail(personalGoogleAccountID, subject, body)
+            GmailApp.sendEmail(personalGoogleAccountID, subject, removeBadSyntax(body))
           }
           else if (title_changed) {
             updateTitle(personalCalendarEvent, index, sheet, event_title)
 
             var body = "Title was updated from:\n" + spreadsheet_gsuite_event_title + "\n\nto:\n" + event_title
-            GmailApp.sendEmail(personalGoogleAccountID, subject, body)
+            GmailApp.sendEmail(personalGoogleAccountID, subject, removeBadSyntax(body))
           }
           else if (time_changed) {
             updateDate(personalCalendarEvent, index, sheet, event_start, event_end)
 
             var body = event_title + "\n\nStart time was updated from:\n\n" + spreadsheet_gsuite_event_start + x + "\n\nto:\n\n" + event_start + "\n-\n" + event_end
-            GmailApp.sendEmail(personalGoogleAccountID, subject, body)
+            GmailApp.sendEmail(personalGoogleAccountID, subject, removeBadSyntax(body))
           }
         }
       }
@@ -195,10 +195,16 @@ function generateEvents(untrackedEvents, personalCalendar, personalGoogleAccount
     // track this new event in our spreadsheet so we can check in future for any changes made to it
     sheet.appendRow([event.getId(), newPersonalEvent.getId(), eventTitle, startTime])
 
-    var body = "Title: " + eventTitle + "\n\nDescription:\n" + eventDescription
+    var body = "Title: " + eventTitle + "\n\nStarts: " + startTime + "\nEnds: " + endTime + "\n\nDescription:\n" + eventDescription
 
     // send an email to let your personal google account know about the new event added
     var subject = "Event from your " + companyName + " account has been synced"
-    GmailApp.sendEmail(personalGoogleAccountID, subject, body)
+    GmailApp.sendEmail(personalGoogleAccountID, subject, removeBadSyntax(body))
   }
+}
+
+function removeBadSyntax(body) {
+  var newbody = body.replace(/<br>/gi, "\n")
+  newbody = body.replace(/<a.+?href="([^"]+).+?>.+?<\/a>/gi, "$1")
+  return newbody;
 }
