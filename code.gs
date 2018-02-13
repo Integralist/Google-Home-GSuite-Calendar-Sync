@@ -203,8 +203,8 @@ function generateEvents(untrackedEvents, personalCalendar, personalGoogleAccount
   }
 }
 
-function removeBadSyntax(body) {
-  var newbody = body.replace(/<br>/gi, "\n")
-  newbody = body.replace(/<a.+?href="([^"]+).+?>.+?<\/a>/gi, "$1")
+function removeBadSyntax(b) {
+  var newbody = b.replace(/<br>/gi, "\n")
+  newbody = newbody.replace(/<a.+?href="([^"]+).+?>.+?<\/a>/gi, "$1")
   return newbody;
 }
